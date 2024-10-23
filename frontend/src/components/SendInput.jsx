@@ -33,12 +33,22 @@ const SendInput = () => {
 	return (
 		<form onSubmit={onSubmitHandler} className="px-4 my-3">
 			<div className="w-full relative">
+				<span className="absolute inset-y-0 left-0 flex items-center pl-3">
+					<img
+						src="https://img.icons8.com/?size=100&id=bjHuxcHTNosO&format=png&color=000000"
+						alt="Upload"
+						className="w-5 h-5 cursor-pointer"
+						onClick={() => {
+							// Image upload functionality here
+						}}
+					/>
+				</span>
 				<input
 					value={message}
 					onChange={e => setMessage(e.target.value)}
 					type="text"
 					placeholder="Send a message..."
-					className="border text-sm rounded-lg block w-full p-3 border-zinc-500 bg-gray-600 text-white"
+					className="border text-sm rounded-lg block w-full pl-10 p-3 border-zinc-500 bg-gray-600 text-white"
 				/>
 				<button type="submit" className="absolute flex inset-y-0 end-0 items-center pr-4">
 					<IoSend />
