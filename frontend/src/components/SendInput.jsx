@@ -8,6 +8,7 @@ import { BASE_URL } from '..';
 const SendInput = () => {
 	const [message, setMessage] = useState('');
 	const [image, setImage] = useState(null);
+	const [imagePreview, setImagePreview] = useState(null); // State for image preview
 	const dispatch = useDispatch();
 	const { selectedUser } = useSelector(store => store.user);
 	const { messages } = useSelector(store => store.message);
@@ -18,21 +19,20 @@ const SendInput = () => {
 			const formData = new FormData();
 			formData.append('message', message);
 			if (image) {
-				formData.append('image', image); // Add image file to the form data
+				formData.append('image', image);
 			}
 
 			const res = await axios.post(`${BASE_URL}/api/v1/message/send/${selectedUser?._id}`, formData, {
 				headers: {
-					'Content-Type': 'multipart/form-data', // Use multipart/form-data for file upload
+					'Content-Type': 'multipart/form-data',
 				},
 				withCredentials: true,
 			});
 
-			// Check if the image was uploaded successfully
 			if (res.data.imageUploaded) {
-				alert('Image sent successfully!');
+				alert('Image Sent Successfully!');
 			} else {
-				alert('Message sent without image.');
+				alert('Text Message Sent.');
 			}
 
 			dispatch(setMessages([...messages, res?.data?.newMessage]));
@@ -41,11 +41,14 @@ const SendInput = () => {
 			alert('Failed to send the message. Please try again.');
 		}
 		setMessage('');
-		setImage(null); // Reset image after submission
+		setImage(null);
+		setImagePreview(null); // Reset image preview after submission
 	};
 
 	const onImageChange = e => {
-		setImage(e.target.files[0]); // Update image state when a file is selected
+		const file = e.target.files[0];
+		setImage(file);
+		setImagePreview(URL.createObjectURL(file)); // Set the image preview
 	};
 
 	return (
@@ -55,9 +58,8 @@ const SendInput = () => {
 					<input type="file" accept="image/*" style={{ display: 'none' }} id="imageUpload" onChange={onImageChange} />
 					<label htmlFor="imageUpload" className="cursor-pointer relative">
 						<img src="https://img.icons8.com/?size=100&id=bjHuxcHTNosO&format=png&color=000000" alt="Upload" className="w-5 h-5" />
-						{/* Red circle indicating image selection */}
 						{image && (
-							<span className="absolute -top-3 -right-2 bg-green-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">1</span>
+							<span className="absolute -top-3 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">1</span>
 						)}
 					</label>
 				</span>
@@ -72,6 +74,12 @@ const SendInput = () => {
 					<IoSend />
 				</button>
 			</div>
+			{/* Show image preview if available */}
+			{imagePreview && (
+				<div className="mt-2">
+					<img src={imagePreview} alt="Preview" className="max-w-full h-auto rounded-md border border-gray-400" />
+				</div>
+			)}
 		</form>
 	);
 };
