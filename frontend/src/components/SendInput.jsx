@@ -29,11 +29,11 @@ const SendInput = () => {
 				withCredentials: true,
 			});
 
-			if (res.data.imageUploaded) {
-				alert('Image Sent Successfully!');
-			} else {
-				alert('Text Message Sent.');
-			}
+			// if (res.data.imageUploaded) {
+			// 	alert('Image Sent Successfully!');
+			// } else {
+			// 	alert('Text Message Sent.');
+			// }
 
 			dispatch(setMessages([...messages, res?.data?.newMessage]));
 		} catch (error) {
