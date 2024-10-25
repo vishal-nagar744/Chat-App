@@ -56,19 +56,21 @@ export const sendMessage = async (req, res) => {
 
 		// Save both the conversation and message to the database
 		await Promise.all([gotConversation.save(), newMessage.save()]);
+		// Save the conversation and individual message in Redis
+		const conversationKey = `conversation:${senderId}:${receiverId}`;
+		const messageKey = `message:${newMessage._id}`;
 
-		// Emit the new message to the receiver in real-time using Socket.io
+		await setInCache(conversationKey, gotConversation);
+		await setInCache(messageKey, newMessage);
+
+		// SOCKET IO
 		const receiverSocketId = getReceiverSocketId(receiverId);
 		if (receiverSocketId) {
 			io.to(receiverSocketId).emit('newMessage', newMessage);
 		}
 
-		// Respond with the newly created message
 		return res.status(201).json({
-			success: true,
-			message: 'Message sent successfully',
 			newMessage,
-			imageUploaded: !!imageUrl, // Return true if an image was uploaded
 		});
 	} catch (error) {
 		console.log(error);
