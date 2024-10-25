@@ -1,7 +1,7 @@
 import { Conversation } from '../models/conversationModel.js';
 import { Message } from '../models/messageModel.js';
 import { getReceiverSocketId, io } from '../socket/socket.js';
-import { getFromCache, setInCache } from '../redis/redisUtils.js'; // Import the Redis utility functions
+// import { getFromCache, setInCache } from '../redis/redisUtils.js'; // Import the Redis utility functions
 import path from 'path';
 import fs from 'fs';
 
