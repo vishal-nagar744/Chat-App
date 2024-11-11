@@ -29,20 +29,24 @@ const MessageContainer = () => {
 	}, [handleClickOutside]);
 
 	useEffect(() => {
-		// Update the last seen text when the user is offline
 		if (!isOnline && selectedUser?.lastSeen) {
 			const lastSeenDate = new Date(selectedUser.lastSeen);
 			const now = new Date();
-			let lastSeenText;
 			const diffInMinutes = Math.floor((now - lastSeenDate) / 60000);
 
+			let lastSeenText;
+
+			// Correcting the condition to display "just now" if the user just went offline.
 			if (diffInMinutes < 1) {
 				lastSeenText = 'Last seen just now';
 			} else if (diffInMinutes < 60) {
+				// Handling minute-based display logic
 				lastSeenText = `Last seen ${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
 			} else if (diffInMinutes < 1440) {
+				// Handling "Last seen at" for times within the same day
 				lastSeenText = `Last seen at ${lastSeenDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 			} else {
+				// Handling date-based display for past days
 				lastSeenText = `Last seen on ${lastSeenDate.toLocaleDateString()} at ${lastSeenDate.toLocaleTimeString([], {
 					hour: '2-digit',
 					minute: '2-digit',
