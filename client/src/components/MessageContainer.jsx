@@ -80,18 +80,18 @@ const MessageContainer = () => {
 							<div className="flex justify-between gap-2">
 								<p>{selectedUser?.fullName}</p>
 								{/* Call and Video Call Icons */}
-								<div className="flex space-x-4">
+								<div className="flex space-x-4 ">
 									<button onClick={openCallModal} className="text-green-400">
 										<FaPhoneAlt size={16} />
 									</button>
 									<button onClick={openVideoCallModal} className="text-blue-500">
 										<FaVideo size={21} />
 									</button>
+									<button onClick={toggleDropdown} className="text-white ">
+										<FaEllipsisV size={18} />
+									</button>
 									{/* Three Dot Menu */}
-									<div className="relative" style={{ marginTop: '2px' }}>
-										<button onClick={toggleDropdown} className="text-white mt-2">
-											<FaEllipsisV size={18} />
-										</button>
+									<div className="relative ">
 										{/* Dropdown Menu */}
 										{isDropdownOpen && (
 											<div ref={dropdownRef} className="absolute right-0 top-full mt-2 bg-[#E4E4E7] text-black rounded-md shadow-lg w-48 z-40">
