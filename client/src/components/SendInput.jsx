@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { IoSend } from 'react-icons/io5';
 import {
 	FaImage,
@@ -6,6 +6,7 @@ import {
 	FaMicrophone,
 	FaPhoneAlt,
 	FaPaperclip,
+	FaCamera,
 } from 'react-icons/fa';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +19,11 @@ const SendInput = () => {
 	const [showMediaOptions, setShowMediaOptions] = useState(false);
 	const [selectedMedia, setSelectedMedia] = useState(null);
 	const [imagePreview, setImagePreview] = useState(null);
+	const [photo, setPhoto] = useState(null);
+	const [isCameraOpen, setIsCameraOpen] = useState(false);
+
+	const videoRef = useRef(null);
+	const canvasRef = useRef(null);
 
 	const dispatch = useDispatch();
 	const { selectedUser } = useSelector(store => store.user);
@@ -30,6 +36,9 @@ const SendInput = () => {
 			formData.append('message', message);
 			if (image) {
 				formData.append('image', image);
+			}
+			if (photo) {
+				formData.append('image', photo);
 			}
 
 			const res = await axios.post(`${BASE_URL}/api/v1/message/send/${selectedUser?._id}`, formData, {
@@ -47,6 +56,7 @@ const SendInput = () => {
 		setMessage('');
 		setImage(null);
 		setImagePreview(null);
+		setPhoto(null); // Clear photo state after sending
 	};
 
 	const onImageChange = e => {
@@ -62,6 +72,23 @@ const SendInput = () => {
 	const handleMediaSelection = mediaType => {
 		setSelectedMedia(mediaType);
 		setShowMediaOptions(false); // Close media options after selecting
+	};
+
+	// Handle camera activation
+	const openCamera = async () => {
+		setIsCameraOpen(true);
+		const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+		videoRef.current.srcObject = stream;
+	};
+
+	// Capture photo from camera
+	const capturePhoto = () => {
+		const canvas = canvasRef.current;
+		const context = canvas.getContext('2d');
+		context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+		const dataUrl = canvas.toDataURL('image/png');
+		setPhoto(dataUrl); // Store captured photo
+		setIsCameraOpen(false); // Close camera view after capture
 	};
 
 	return (
@@ -108,6 +135,11 @@ const SendInput = () => {
 					<button type="submit" className="absolute flex inset-y-0 end-0 items-center pr-4">
 						<IoSend />
 					</button>
+
+					{/* Camera Icon */}
+					<button type="button" onClick={openCamera} className="absolute flex inset-y-0 end-10 items-center pr-4 cursor-pointer">
+						<FaCamera className="text-white w-4 h-4" /> {/* Smaller Camera icon */}
+					</button>
 				</div>
 
 				{/* Media options - image selection */}
@@ -134,6 +166,17 @@ const SendInput = () => {
 					</div>
 				)}
 			</form>
+
+			{/* Camera View (only visible when camera is open) */}
+			{isCameraOpen && (
+				<div className="camera-container fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex justify-center items-center z-20">
+					<video ref={videoRef} autoPlay className="w-full h-auto" />
+					<button onClick={capturePhoto} className="absolute bottom-10 bg-white text-black p-2 rounded-full">
+						Capture
+					</button>
+					<canvas ref={canvasRef} style={{ display: 'none' }} />
+				</div>
+			)}
 		</div>
 	);
 };
