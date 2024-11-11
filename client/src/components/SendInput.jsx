@@ -103,7 +103,7 @@ const SendInput = () => {
 
 						{/* Media options dropdown */}
 						{showMediaOptions && (
-							<div className="absolute left-0 bottom-full mb-2 bg-white shadow-lg rounded-lg w-40 p-2 z-10">
+							<div className="absolute left-0 bottom-full mb-2 bg-[#E4E4E7] shadow-lg rounded-lg w-40 p-2 z-10">
 								<button onClick={() => handleMediaSelection('image')} className="flex items-center space-x-2 w-full text-gray-800 hover:bg-gray-100 py-1 px-2">
 									<FaImage className="text-green-500" />
 									<span>Image</span>
