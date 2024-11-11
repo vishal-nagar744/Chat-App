@@ -19,7 +19,7 @@ const persistConfig = {
 	version: 1,
 	storage: storageSession,
 	whitelist: ['user'],
-	blacklist: ['messages', 'socket'], // Exclude 'socket' from being persisted
+	// blacklist: ['socket'], // Exclude 'socket' from being persisted
 };
 
 const rootReducer = combineReducers({
