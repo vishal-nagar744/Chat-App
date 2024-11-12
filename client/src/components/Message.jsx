@@ -6,6 +6,7 @@ const Message = ({ message, previousMessage }) => {
 	const scroll = useRef();
 	const { authUser, selectedUser } = useSelector(store => store.user);
 
+	// State to keep track of last date header shown
 	const [lastDateHeader, setLastDateHeader] = useState(null);
 
 	// Scroll to the latest message
@@ -19,7 +20,7 @@ const Message = ({ message, previousMessage }) => {
 		const lastHeaderDate = lastDateHeader?.setHours(0, 0, 0, 0); // Ignore time part
 
 		if (!lastDateHeader) {
-			setLastDateHeader(new Date(message.createdAt));
+			setLastDateHeader(new Date(message.createdAt)); // Set the first message's date
 			return true; // Show header for the first message
 		}
 
@@ -33,16 +34,11 @@ const Message = ({ message, previousMessage }) => {
 		const yesterday = new Date();
 		yesterday.setDate(now.getDate() - 1);
 
-		// If the message is from today
 		if (date.toDateString() === now.toDateString()) {
 			return 'Today';
-		}
-		// If the message is from yesterday
-		else if (date.toDateString() === yesterday.toDateString()) {
+		} else if (date.toDateString() === yesterday.toDateString()) {
 			return 'Yesterday';
-		}
-		// For any other day, return the specific date
-		else {
+		} else {
 			const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 			return new Intl.DateTimeFormat('en-US', options).format(date);
 		}
